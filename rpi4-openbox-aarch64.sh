@@ -1,18 +1,18 @@
 #!/bin/bash
-echo "========================="
-echo "| RPI3 XFCE VOID AARCH64  |"
-echo " ------------------------"
+echo "============================="
+echo "| RPI4 OPENBOX VOID AARCH64 |"
+echo "-----------------------------"
 
-CURRENT=https://mirrors.servercentral.com/voidlinux/current/aarch64
-NONFREE=https://mirrors.servercentral.com/voidlinux/current/aarch64/nonfree
+CURRENT=https://mirror.fit.cvut.cz/voidlinux/current/aarch64
+NONFREE=https://mirror.fit.cvut.cz/voidlinux/current/aarch64/nonfree
 
-FILENAME="void-rpi3"
+FILENAME="void-rpi4"
 DATE=$(date +%Y%m%d)
 BUILDDIR="$(pwd)/build"
 
 retry=0
  Run command with set architechure, repos and package list
-until [ -f ${FILENAME}-xfce-unofficial-${DATE}.img ];do
+until [ -f ${FILENAME}-openbox-unofficial-${DATE}.img ];do
 
     ((retry++))
     if [[ $retry -eq 2 ]];then
@@ -26,22 +26,22 @@ until [ -f ${FILENAME}-xfce-unofficial-${DATE}.img ];do
     sudo ./mkplatformfs.sh \
         -r "${CURRENT}" \
         -r "${NONFREE}" \
-        -p "$(grep '^[^#].' rpi3-xfce-aarch64.packages)" \
-        -o ${FILENAME}-PLATFORMFS-${DATE}.tar.xz rpi3 ${FILENAME}-ROOTFS-${DATE}.tar.xz
+        -p "$(grep '^[^#].' rpi4-openbox-aarch64.packages)" \
+        -o ${FILENAME}-PLATFORMFS-${DATE}.tar.xz rpi4 ${FILENAME}-ROOTFS-${DATE}.tar.xz
 	echo "MKIMAGE"
-    sudo ./mkimage.sh -o ${FILENAME}-xfce-unofficial-${DATE}.img ${FILENAME}-PLATFORMFS-${DATE}.tar.xz
+    sudo ./mkimage.sh -o ${FILENAME}-openbox-unofficial-${DATE}.img ${FILENAME}-PLATFORMFS-${DATE}.tar.xz
     
 done
 
  Make sure resulting ISO exists and sent error to webpage if not
-if [ ! -f ${FILENAME}-xfce-unofficial-${DATE}.img ];then   
-        echo "Error: ${FILENAME}-xfce-unofficial-${DATE}.img : does not exist! Aborting!"
+if [ ! -f ${FILENAME}-openbox-unofficial-${DATE}.img ];then   
+        echo "Error: ${FILENAME}-openbox-unofficial-${DATE}.img : does not exist! Aborting!"
         echo "ERR=1" > error-status.txt
         exit 1
 fi
 
 # Add iso file to checksum list
-${FILENAME}-xfce-unofficial-${DATE}.img >> sha256sums.txt
+${FILENAME}-openbox-unofficial-${DATE}.img >> sha256sums.txt
 
 
 
@@ -58,4 +58,4 @@ if [ ! -d "${BUILDDIR}" ];then
 fi
 
 # Move the iso file to the build directory
-mv ${FILENAME}-xfce-unofficial-${DATE}.img build
+mv ${FILENAME}-openbox-unofficial-${DATE}.img build
